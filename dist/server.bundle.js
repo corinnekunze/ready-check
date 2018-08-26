@@ -96,7 +96,6 @@
 "use strict";
 
 
-var database = __webpack_require__(/*! ../database.js */ "./src/server/database.js");
 var Group = __webpack_require__(/*! ../models/group.model.js */ "./src/server/models/group.model.js");
 
 function returnError(error, response) {

@@ -1,6 +1,4 @@
-const database = require('../database.js');
 const Group = require('../models/group.model.js');
-
 
 function returnError(error, response) {
   response.status(500).send({
