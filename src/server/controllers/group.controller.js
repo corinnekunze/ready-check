@@ -1,4 +1,6 @@
+const database = require('../database.js');
 const Group = require('../models/group.model.js');
+
 
 function returnError(error, response) {
   response.status(500).send({
@@ -25,12 +27,9 @@ function responseError(error, response) {
 }
 
 exports.create = (request, response) => {
-  if (contentEmpty(request.body, response)) { return false; }
-
   const group = new Group({
     name: request.body.name,
   });
-
   group.save().then((data) => {
     response.send(data);
   }).catch(error => returnError(error, response));

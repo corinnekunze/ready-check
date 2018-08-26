@@ -96,6 +96,7 @@
 "use strict";
 
 
+var database = __webpack_require__(/*! ../database.js */ "./src/server/database.js");
 var Group = __webpack_require__(/*! ../models/group.model.js */ "./src/server/models/group.model.js");
 
 function returnError(error, response) {
@@ -127,14 +128,9 @@ function responseError(error, response) {
 }
 
 exports.create = function (request, response) {
-  if (contentEmpty(request.body, response)) {
-    return false;
-  }
-
   var group = new Group({
     name: request.body.name
   });
-
   group.save().then(function (data) {
     response.send(data);
   }).catch(function (error) {
