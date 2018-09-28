@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const GroupSchema = mongoose.Schema({
-  name: String,
-}, {
-  timestamps: true,
+  name: { type: String, required: true },
+  created_at: Date,
+  updated_at: Date
 });
 
 module.exports = mongoose.model('Group', GroupSchema);

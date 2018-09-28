@@ -230,6 +230,7 @@ module.exports = database;
 "use strict";
 /* WEBPACK VAR INJECTION */(function(__dirname) {
 
+var config = __webpack_require__(/*! config */ "config");
 var express = __webpack_require__(/*! express */ "express");
 var bodyParser = __webpack_require__(/*! body-parser */ "body-parser");
 
@@ -242,7 +243,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', routes);
 app.use(express.static('dist'));
 
-var webPort = 8080;
+var webPort = config.get('port') || 8080;
 
 __webpack_require__(/*! ./database */ "./src/server/database.js").then(app.listen(webPort, function () {
   console.log('App listening on port ' + webPort + '.');
@@ -268,9 +269,9 @@ module.exports = app;
 var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
 
 var GroupSchema = mongoose.Schema({
-  name: String
-}, {
-  timestamps: true
+  name: { type: String, required: true },
+  created_at: Date,
+  updated_at: Date
 });
 
 module.exports = mongoose.model('Group', GroupSchema);
@@ -345,6 +346,17 @@ module.exports = __webpack_require__(/*! ./src/server/index.js */"./src/server/i
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
+
+/***/ }),
+
+/***/ "config":
+/*!*************************!*\
+  !*** external "config" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("config");
 
 /***/ }),
 

@@ -1,3 +1,4 @@
+const config = require('config');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -10,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', routes);
 app.use(express.static('dist'));
 
-const webPort = 8080;
+const webPort = config.get('port') || 8080;
 
 require('./database')
   .then(
