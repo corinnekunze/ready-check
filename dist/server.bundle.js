@@ -189,37 +189,6 @@ exports.delete = function (request, response) {
 
 /***/ }),
 
-/***/ "./src/server/database.js":
-/*!********************************!*\
-  !*** ./src/server/database.js ***!
-  \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var dbConfig = 'mongodb://localhost:27017/ready-check';
-
-mongoose.Promise = global.Promise;
-
-mongoose.connect(dbConfig, {
-  useNewUrlParser: true
-}).then(function () {
-  console.log('Successful connection!');
-}).catch(function (error) {
-  console.log('Could not connect to database: ' + error);
-  process.exit();
-});
-
-var database = mongoose.connection;
-
-module.exports = database;
-
-/***/ }),
-
 /***/ "./src/server/index.js":
 /*!*****************************!*\
   !*** ./src/server/index.js ***!
@@ -233,11 +202,13 @@ module.exports = database;
 var config = __webpack_require__(/*! config */ "config");
 var express = __webpack_require__(/*! express */ "express");
 var bodyParser = __webpack_require__(/*! body-parser */ "body-parser");
+var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+__webpack_require__(/*! dotenv */ "dotenv").config();
 
 var app = express();
 var routes = __webpack_require__(/*! ./routes/router */ "./src/server/routes/router.js");
 
-global.__baseDir = __dirname;
+global.baseDir = __dirname;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', routes);
@@ -245,10 +216,15 @@ app.use(express.static('dist'));
 
 var webPort = config.get('port') || 8080;
 
-__webpack_require__(/*! ./database */ "./src/server/database.js").then(app.listen(webPort, function () {
-  console.log('App listening on port ' + webPort + '.');
-})).catch(function (error) {
-  return console.log(error);
+var dbUrl = 'mongodb://localhost:27017/ready-check';
+// const dbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}
+//               @ready-check-bemau.mongodb.net/test?retryWrites=true`;
+mongoose.connect(dbUrl, { useNewUrlParser: true }).then(function () {
+  app.listen(webPort, function () {
+    console.log('App listening on port ' + webPort + '.');
+  });
+}).catch(function (error) {
+  console.log(error);
 });
 
 module.exports = app;
@@ -295,11 +271,11 @@ module.exports = function (app) {
 
   app.get('/groups', groups.findAll);
 
-  app.get('/group/:groupId', groups.findOne);
+  app.get('/groups/:groupId', groups.findOne);
 
-  app.put('/group/:groupId', groups.update);
+  app.put('/groups/:groupId', groups.update);
 
-  app.delete('/group/:groupId', groups.delete);
+  app.delete('/groups/:groupId', groups.delete);
 };
 
 /***/ }),
@@ -319,7 +295,7 @@ __webpack_require__(/*! ./group.routes.js */ "./src/server/routes/group.routes.j
 var path = __webpack_require__(/*! path */ "path");
 
 routes.get('/', function (request, response) {
-  response.sendFile(path.join(global.__baseDir, '../../views/index.html'));
+  response.sendFile(path.join(global.baseDir, '../../views/index.html'));
 });
 
 module.exports = routes;
@@ -357,6 +333,17 @@ module.exports = require("body-parser");
 /***/ (function(module, exports) {
 
 module.exports = require("config");
+
+/***/ }),
+
+/***/ "dotenv":
+/*!*************************!*\
+  !*** external "dotenv" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("dotenv");
 
 /***/ }),
 

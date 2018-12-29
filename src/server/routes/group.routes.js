@@ -5,9 +5,9 @@ module.exports = (app) => {
 
   app.get('/groups', groups.findAll);
 
-  app.get('/group/:groupId', groups.findOne);
+  app.get('/groups/:groupId', groups.findOne);
 
-  app.put('/group/:groupId', groups.update);
+  app.put('/groups/:groupId', groups.update);
 
-  app.delete('/group/:groupId', groups.delete);
+  app.delete('/groups/:groupId', groups.delete);
 };
