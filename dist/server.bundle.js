@@ -93,10 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-var Group = __webpack_require__(/*! ../models/group.model.js */ "./src/server/models/group.model.js");
+const Group = __webpack_require__(/*! ../models/group.model.js */ "./src/server/models/group.model.js");
 
 function returnError(error, response) {
   response.status(500).send({
@@ -108,6 +105,7 @@ function contentEmpty(content, response) {
   if (content) {
     return true;
   }
+
   return response.status(400).send({
     message: 'Group content cannot be empty'
   });
@@ -123,68 +121,69 @@ function responseError(error, response) {
   if (error.kind === 'ObjectId') {
     return groupNotFound(response);
   }
+
   return returnError(error, response);
 }
 
-exports.create = function (request, response) {
-  var group = new Group({
+exports.create = (request, response) => {
+  const group = new Group({
     name: request.body.name
   });
-  group.save().then(function (data) {
+  group.save().then(data => {
     response.send(data);
-  }).catch(function (error) {
-    return returnError(error, response);
-  });
+  }).catch(error => returnError(error, response));
 };
 
-exports.findAll = function (request, response) {
-  Group.find().then(function (groups) {
+exports.findAll = (request, response) => {
+  Group.find().then(groups => {
     response.send(groups);
-  }).catch(function (error) {
-    return returnError(error, response);
-  });
+  }).catch(error => returnError(error, response));
 };
 
-exports.findOne = function (request, response) {
-  Group.findById(request.params.groupId).then(function (group) {
+exports.findOne = (request, response) => {
+  Group.findById(request.params.groupId).then(group => {
     if (!group) {
       return groupNotFound(response);
     }
+
     response.send(group);
-  }).catch(function (error) {
+  }).catch(error => {
     if (error.kind === 'ObjectId') {
       return groupNotFound(response);
     }
+
     return returnError(error, response);
   });
 };
 
-exports.update = function (request, response) {
+exports.update = (request, response) => {
   if (contentEmpty(request.body, response)) {
     return false;
   }
 
   Group.findByIdAndUpdate(request.params.groupId, {
     name: request.body.name
-  }, { new: true }).then(function (group) {
+  }, {
+    new: true
+  }).then(group => {
     if (!group) {
       return groupNotFound(response);
     }
+
     response.send(group);
-  }).catch(function (error) {
-    return responseError(response, error);
-  });
+  }).catch(error => responseError(response, error));
 };
 
-exports.delete = function (request, response) {
-  Group.findByIdAndRemove(request.params.groupId).then(function (group) {
+exports.delete = (request, response) => {
+  Group.findByIdAndRemove(request.params.groupId).then(group => {
     if (!group) {
       return groupNotFound(response);
     }
-    response.send({ message: 'Group deleted successfully!' });
-  }).catch(function (error) {
-    return responseError(response, error);
-  });
+
+    response.send({
+      message: 'Group deleted successfully!'
+    });
+  }).catch(error => responseError(response, error));
 };
 
 /***/ }),
@@ -196,37 +195,39 @@ exports.delete = function (request, response) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(__dirname) {
+/* WEBPACK VAR INJECTION */(function(__dirname) {const config = __webpack_require__(/*! config */ "config");
 
-var config = __webpack_require__(/*! config */ "config");
-var express = __webpack_require__(/*! express */ "express");
-var bodyParser = __webpack_require__(/*! body-parser */ "body-parser");
-var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+const express = __webpack_require__(/*! express */ "express");
+
+const bodyParser = __webpack_require__(/*! body-parser */ "body-parser");
+
+const mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+
 __webpack_require__(/*! dotenv */ "dotenv").config();
 
-var app = express();
-var routes = __webpack_require__(/*! ./routes/router */ "./src/server/routes/router.js");
+const app = express();
+
+const routes = __webpack_require__(/*! ./routes/router */ "./src/server/routes/router.js");
 
 global.baseDir = __dirname;
-
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use('/', routes);
 app.use(express.static('dist'));
-
-var webPort = config.get('port') || 8080;
-
-var dbUrl = 'mongodb://localhost:27017/ready-check';
-// const dbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}
+const webPort = config.get('port') || 8080;
+const dbUrl = 'mongodb://localhost:27017/ready-check'; // const dbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}
 //               @ready-check-bemau.mongodb.net/test?retryWrites=true`;
-mongoose.connect(dbUrl, { useNewUrlParser: true }).then(function () {
-  app.listen(webPort, function () {
-    console.log('App listening on port ' + webPort + '.');
+
+mongoose.connect(dbUrl, {
+  useNewUrlParser: true
+}).then(() => {
+  app.listen(webPort, () => {
+    console.log(`App listening on port ${webPort}.`);
   });
-}).catch(function (error) {
+}).catch(error => {
   console.log(error);
 });
-
 module.exports = app;
 /* WEBPACK VAR INJECTION */}.call(this, "/"))
 
@@ -239,17 +240,16 @@ module.exports = app;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+const mongoose = __webpack_require__(/*! mongoose */ "mongoose");
 
-
-var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var GroupSchema = mongoose.Schema({
-  name: { type: String, required: true },
+const GroupSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
   created_at: Date,
   updated_at: Date
 });
-
 module.exports = mongoose.model('Group', GroupSchema);
 
 /***/ }),
@@ -261,20 +261,13 @@ module.exports = mongoose.model('Group', GroupSchema);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+const groups = __webpack_require__(/*! ../controllers/group.controller.js */ "./src/server/controllers/group.controller.js");
 
-
-var groups = __webpack_require__(/*! ../controllers/group.controller.js */ "./src/server/controllers/group.controller.js");
-
-module.exports = function (app) {
+module.exports = app => {
   app.post('/groups', groups.create);
-
   app.get('/groups', groups.findAll);
-
   app.get('/groups/:groupId', groups.findOne);
-
   app.put('/groups/:groupId', groups.update);
-
   app.delete('/groups/:groupId', groups.delete);
 };
 
@@ -287,17 +280,15 @@ module.exports = function (app) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+const routes = __webpack_require__(/*! express */ "express").Router();
 
-
-var routes = __webpack_require__(/*! express */ "express").Router();
 __webpack_require__(/*! ./group.routes.js */ "./src/server/routes/group.routes.js")(routes);
-var path = __webpack_require__(/*! path */ "path");
 
-routes.get('/', function (request, response) {
+const path = __webpack_require__(/*! path */ "path");
+
+routes.get('/', (request, response) => {
   response.sendFile(path.join(global.baseDir, '../../views/index.html'));
 });
-
 module.exports = routes;
 
 /***/ }),
