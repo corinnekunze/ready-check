@@ -1,0 +1,7 @@
+{
+  "name": "server",
+  "moduleFileExtensions": ["js"],
+  "moduleDirectories": ["node_modules", "<rootDir>"],
+  "testEnvironment": "node",
+  "rootDir": "./"
+}
