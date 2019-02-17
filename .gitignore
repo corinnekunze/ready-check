@@ -2,3 +2,4 @@ node_modules/
 ready-check.sublime-workspace
 .env
 .vscode/
+dist/
