@@ -3,17 +3,18 @@ const nodeExternals = require('webpack-node-externals');
 
 const config = {
   output: {
-    publicPath: '/assets/',
-    path: path.resolve(__dirname, './dist'),
     filename: '[name].bundle.js'
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
         }
       }
     ]
@@ -22,6 +23,7 @@ const config = {
 
 if (process.env.NODE_ENV !== 'production') {
   config.devtool = 'source-map';
+  config.watch = true;
 }
 
 const clientConfig = {
@@ -29,9 +31,17 @@ const clientConfig = {
   name: 'client',
   target: 'web',
 
+  output: {
+    ...config.output,
+    path: path.join(__dirname, 'public', 'assets'),
+    publicPath: '/assets/'
+  },
+
   entry: {
     client: ['./src/client/index.js']
-  }
+  },
+
+  resolve: { extensions: ['.jsx', '.js', '.json'] }
 };
 
 const serverConfig = {
@@ -41,6 +51,11 @@ const serverConfig = {
 
   entry: {
     server: ['./src/server/index.js']
+  },
+
+  output: {
+    ...config.output,
+    path: path.resolve(__dirname, './dist'),
   },
 
   externals: [nodeExternals()]

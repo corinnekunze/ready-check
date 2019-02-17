@@ -3,3 +3,4 @@ ready-check.sublime-workspace
 .env
 .vscode/
 dist/
+public/
