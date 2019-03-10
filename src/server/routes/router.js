@@ -1,9 +1,10 @@
-const routes = require('express').Router();
-require('./group.routes.js')(routes);
+const router = require('express').Router();
 const path = require('path');
 
-routes.get('/', (request, response) => {
+router.use('/api/groups', require('./group.routes.js'));
+
+router.get('/', (request, response) => {
   response.sendFile(path.join(global.baseDir, '../../views/index.html'));
 });
 
-module.exports = routes;
+module.exports = router;

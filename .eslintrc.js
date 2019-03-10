@@ -1,7 +1,8 @@
 module.exports = {
   'parser': 'babel-eslint',
   'extends': [
-    'airbnb-base'
+    'airbnb-base',
+    'plugin:react/recommended'
   ],
   'parserOptions': {
     'ecmaVersion': 7,

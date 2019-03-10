@@ -1,5 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App/index.jsx';
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRouter from './app-router';
+import './styles/app.css';
 
-ReactDOM.render(<App/>, document.getElementById('ready-check-app'));
+ReactDOM.render(
+  <Router>
+    <AppRouter />
+  </Router>,
+  document.getElementById('ready-check-app')
+);

@@ -37,6 +37,16 @@ const clientConfig = {
     publicPath: '/assets/'
   },
 
+  module: {
+    rules: [
+      ...config.module.rules,
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      }
+    ]
+  },
+
   entry: {
     client: ['./src/client/index.js']
   },
